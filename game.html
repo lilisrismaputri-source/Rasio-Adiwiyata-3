@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pahlawan Hijau Adiwiyata - Game Edukasi Matematika Rasio</title>
+
+    <!-- MathJax CDN untuk tampilan pecahan & persamaan matematika -->
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']]
+          }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        eco: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        display: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style type="text/tailwindcss">
+        @layer components {
+            .btn-bento-primary {
+                @apply bg-eco-600 hover:bg-eco-500 active:translate-y-1 text-white font-display font-extrabold py-3.5 px-6 rounded-2xl border-b-[5px] border-eco-800 shadow-lg transition-all duration-150 flex items-center justify-center gap-2.5 cursor-pointer select-none;
+            }
+            .btn-bento-secondary {
+                @apply bg-white hover:bg-slate-50 active:translate-y-1 text-slate-700 font-display font-bold py-3.5 px-6 rounded-2xl border-2 border-slate-200 border-b-[5px] border-b-slate-300 shadow-sm transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer select-none;
+            }
+            .bento-card-tile {
+                @apply bg-white rounded-3xl p-5 border-2 border-slate-100 border-b-4 border-b-slate-200 shadow-sm transition-all duration-200;
+            }
+            .bento-card-tile-active {
+                @apply border-eco-200 border-b-4 border-b-eco-500 shadow-md bg-white hover:-translate-y-1 cursor-pointer;
+            }
+            .bento-card-tile-locked {
+                @apply opacity-60 bg-slate-100 border-slate-200 border-b-4 border-b-slate-300 cursor-not-allowed;
+            }
+        }
+
+        mjx-container {
+            max-width: 100% !important;
+            overflow-x: auto !important;
+            vertical-align: middle !important;
+        }
+
+        .game-screen {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .game-screen.active {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-sky-50 via-eco-50 to-amber-50 min-h-screen text-slate-800 font-sans flex items-center justify-center p-3 sm:p-5 relative overflow-x-hidden">
+
+    <div class="w-full max-w-4xl mx-auto relative z-10">
+        <main class="bg-white/95 backdrop-blur-md rounded-[32px] p-5 sm:p-8 md:p-10 border-2 border-white shadow-xl ring-4 ring-eco-100/60 relative">
+
+            <!-- HEADER BAR LOGO -->
+            <header class="flex flex-wrap items-center justify-between gap-4 pb-6 mb-7 border-b-2 border-dashed border-slate-200">
+                <div class="flex items-center gap-2 sm:gap-3 flex-wrap bg-slate-50/80 px-3.5 py-2 rounded-2xl border border-slate-200">
+                    <img src="logo-pgri.png" alt="Logo PGRI" class="h-10 sm:h-12 w-auto object-contain">
+                    <img src="logo-wonogiri.png" alt="Logo Pemkab Wonogiri" class="h-10 sm:h-12 w-auto object-contain">
+                    <div class="h-8 w-px bg-slate-200 mx-1"></div>
+                    <img src="logo-madrasah.png" alt="Logo MTsN 3 Wonogiri" class="h-9 sm:h-11 w-auto object-contain">
+                    <img src="logo-adiwiyata.png" alt="Logo Adiwiyata" class="h-9 sm:h-11 w-auto object-contain">
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button id="btn-sound-toggle" onclick="toggleSound()" class="bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-display font-bold py-2 px-3 rounded-xl border-2 border-emerald-300 border-b-4 border-b-emerald-400 text-xs flex items-center gap-1">
+                        🔊 Suara
+                    </button>
+                    <button onclick="toggleInstructions(true)" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-display font-bold py-2 px-3 rounded-xl border-2 border-amber-300 border-b-4 border-b-amber-400 text-xs flex items-center gap-1">
+                        ❓ Petunjuk
+                    </button>
+                    <a href="index.html" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-display font-bold py-2 px-4 rounded-xl border-2 border-slate-200 border-b-4 border-b-slate-300 text-xs">
+                        🏠 Beranda Utama
+                    </a>
+                </div>
+            </header>
+
+            <!-- 1. SPLASH SCREEN -->
+            <section id="screen-splash" class="game-screen active">
+                <div class="text-center">
+                    <div class="inline-flex items-center gap-2 bg-amber-100 text-amber-900 border-2 border-amber-300 border-b-4 border-b-amber-400 font-display font-extrabold text-xs sm:text-sm px-4 py-1.5 rounded-full uppercase tracking-wider mb-4 shadow-sm">
+                        <span>🌱</span> Game Edukasi Matematika Adiwiyata
+                    </div>
+                    <h1 class="text-3xl sm:text-5xl font-display font-black text-eco-900 tracking-tight mb-3">
+                        PAHLAWAN HIJAU ADIWIYATA
+                    </h1>
+                    <p class="text-slate-600 max-w-xl mx-auto text-sm sm:text-base leading-relaxed mb-8">
+                        Petualangan edukasi matematika rasio & perbandingan berbasis aksi nyata pelestarian lingkungan sekolah Adiwiyata.
+                    </p>
+                </div>
+
+                <div class="bg-gradient-to-r from-eco-50 via-emerald-50 to-sky-50 rounded-2xl p-4 sm:p-5 border-2 border-eco-200 border-b-4 border-b-eco-300 mb-8 flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-12 h-12 rounded-xl bg-eco-500 border-2 border-eco-600 flex items-center justify-center text-2xl shadow-sm">
+                            👩‍🏫
+                        </div>
+                        <div>
+                            <h3 class="font-display font-extrabold text-eco-900 text-base sm:text-lg">Lilis Risma Putri, S.Pd.</h3>
+                            <p class="text-xs sm:text-sm font-semibold text-eco-700">NIP: 200202222025052003 &bull; MTs Negeri 3 Wonogiri</p>
+                        </div>
+                    </div>
+                    <div class="inline-flex items-center gap-2 bg-white/90 px-3.5 py-1.5 rounded-xl border border-sky-200 text-sky-800 text-xs sm:text-sm font-extrabold shadow-sm">
+                        <span>🏛️</span> MTsN 3 Wonogiri - Cabang Khusus Kemenag
+                    </div>
+                </div>
+
+                <div class="max-w-md mx-auto mb-8 text-left">
+                    <label for="input-student-name" class="block font-display font-bold text-slate-800 text-sm mb-2">
+                        👤 Masukkan Nama Lengkap Siswa:
+                    </label>
+                    <input type="text" id="input-student-name" class="w-full bg-slate-50 focus:bg-white text-slate-900 font-semibold px-4 py-3.5 rounded-2xl border-2 border-slate-200 border-b-4 border-b-slate-300 focus:border-eco-500 focus:outline-none transition-all" placeholder="Ketik nama lengkapmu di sini..." autocomplete="off">
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg mx-auto">
+                    <button class="btn-bento-primary" onclick="handleStartGame()">
+                        <span>🚀 Mulai Petualangan</span>
+                    </button>
+                    <button class="btn-bento-secondary" onclick="toggleInstructions(true)">
+                        <span>❓ Petunjuk Permainan</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 2. PILIH LEVEL MISI -->
+            <section id="screen-education" class="game-screen">
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-display font-extrabold text-eco-900">Pilih Misi Lingkungan</h2>
+                        <p class="text-xs sm:text-sm text-slate-500 font-medium">
+                            Kader Lingkungan: <strong id="display-student-name-edu" class="text-eco-700 font-bold">-</strong>
+                        </p>
+                    </div>
+                    <button class="btn-bento-secondary !py-2 !px-4 text-xs" onclick="showSplashScreen()">
+                        <span>🏠 Beranda</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-6" id="level-grid-container">
+                    <div id="card-lvl-1" class="bento-card-tile" onclick="handleSelectLevel(1)">
+                        <span class="bg-eco-100 text-eco-800 font-display font-extrabold text-xs px-2.5 py-1 rounded-lg">Level 1</span>
+                        <h4 class="font-display font-bold text-slate-800 text-base mt-2 mb-1">Pengenalan Rasio</h4>
+                        <p class="text-xs text-slate-500 mb-3">20 Soal Acak (Pilah Sampah & Bibit).</p>
+                        <span id="status-lvl-1" class="font-bold text-xs">Terbuka 🔓</span>
+                    </div>
+
+                    <div id="card-lvl-2" class="bento-card-tile" onclick="handleSelectLevel(2)">
+                        <span class="bg-eco-100 text-eco-800 font-display font-extrabold text-xs px-2.5 py-1 rounded-lg">Level 2</span>
+                        <h4 class="font-display font-bold text-slate-800 text-base mt-2 mb-1">Menyederhanakan Rasio</h4>
+                        <p class="text-xs text-slate-500 mb-3">20 Soal Acak (FPB & Daur Ulang).</p>
+                        <span id="status-lvl-2" class="font-bold text-xs">🔒 Terkunci</span>
+                    </div>
+
+                    <div id="card-lvl-3" class="bento-card-tile" onclick="handleSelectLevel(3)">
+                        <span class="bg-eco-100 text-eco-800 font-display font-extrabold text-xs px-2.5 py-1 rounded-lg">Level 3</span>
+                        <h4 class="font-display font-bold text-slate-800 text-base mt-2 mb-1">Menghitung Nilai</h4>
+                        <p class="text-xs text-slate-500 mb-3">20 Soal Acak (Kompos & Biopori).</p>
+                        <span id="status-lvl-3" class="font-bold text-xs">🔒 Terkunci</span>
+                    </div>
+
+                    <div id="card-lvl-4" class="bento-card-tile" onclick="handleSelectLevel(4)">
+                        <span class="bg-eco-100 text-eco-800 font-display font-extrabold text-xs px-2.5 py-1 rounded-lg">Level 4</span>
+                        <h4 class="font-display font-bold text-slate-800 text-base mt-2 mb-1">Perbandingan Senilai</h4>
+                        <p class="text-xs text-slate-500 mb-3">20 Soal Acak (Air & Lahan TOGA).</p>
+                        <span id="status-lvl-4" class="font-bold text-xs">🔒 Terkunci</span>
+                    </div>
+
+                    <div id="card-lvl-5" class="bento-card-tile" onclick="handleSelectLevel(5)">
+                        <span class="bg-eco-100 text-eco-800 font-display font-extrabold text-xs px-2.5 py-1 rounded-lg">Level 5</span>
+                        <h4 class="font-display font-bold text-slate-800 text-base mt-2 mb-1">Berbalik Nilai</h4>
+                        <p class="text-xs text-slate-500 mb-3">20 Soal Acak (Kader & Waktu Kerja).</p>
+                        <span id="status-lvl-5" class="font-bold text-xs">🔒 Terkunci</span>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center text-xs text-slate-500 pt-2 border-t border-slate-100">
+                    <span>Syarat Buka Level: Lulus level sebelumnya dengan skor minimal 80.</span>
+                    <button onclick="handleResetProgress()" class="text-rose-600 font-bold hover:underline">🔄 Reset Progres</button>
+                </div>
+            </section>
+
+            <!-- 3. TAMPILAN GAMEPLAY -->
+            <section id="screen-gameplay" class="game-screen">
+                <div class="bg-slate-50 rounded-2xl p-3 sm:p-4 border-2 border-slate-200 mb-5 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        <span id="hud-level-title" class="font-display font-black text-eco-800 text-sm sm:text-base">Level 1</span>
+                        <span id="hud-q-number" class="text-xs text-slate-500 font-bold">(Soal 1 dari 5)</span>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="bg-sky-50 border border-sky-200 px-3 py-1 rounded-xl font-display font-extrabold text-sky-800 text-sm flex items-center gap-1">
+                            ⏱️ <span id="hud-timer">30</span>s
+                        </div>
+                        <button onclick="toggleScratchpad(true)" class="bg-purple-100 hover:bg-purple-200 text-purple-900 font-display font-extrabold text-xs px-3 py-1.5 rounded-xl border-2 border-purple-300 border-b-4 border-b-purple-400 flex items-center gap-1 shadow-sm">
+                            🎨 Coret-coret
+                        </button>
+                        <div id="hud-lives" class="text-base tracking-widest">❤️❤️❤️</div>
+                        <div class="bg-amber-50 border border-amber-200 px-3 py-1 rounded-xl font-display font-extrabold text-amber-800 text-sm">⭐ <span id="hud-score">0</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-eco-200 border-b-4 border-b-eco-300 shadow-md mb-6">
+                    <p id="question-prompt-text" class="text-slate-800 text-base sm:text-lg font-bold leading-relaxed mb-6"></p>
+
+                    <div class="bg-slate-50 rounded-2xl p-5 border-2 border-dashed border-slate-200 flex flex-col items-center gap-4">
+                        <!-- Input Rasio a : b (Level 1 & 2) -->
+                        <div id="ratio-input-group" class="flex items-center gap-2">
+                            <input type="text" id="input-part1" class="w-20 h-12 text-center text-xl font-display font-extrabold text-eco-900 bg-white border-2 border-slate-300 rounded-xl focus:border-eco-500 focus:outline-none" placeholder="a">
+                            <span class="text-xl font-bold text-slate-600">:</span>
+                            <input type="text" id="input-part2" class="w-20 h-12 text-center text-xl font-display font-extrabold text-eco-900 bg-white border-2 border-slate-300 rounded-xl focus:border-eco-500 focus:outline-none" placeholder="b">
+                        </div>
+
+                        <!-- Input Angka Tunggal (Level 3, 4, 5) -->
+                        <input type="text" id="input-single-val" class="hidden w-48 sm:w-56 h-12 text-center text-xl font-display font-extrabold text-eco-900 bg-white border-2 border-slate-300 rounded-xl focus:border-eco-500 focus:outline-none" placeholder="Ketik angka..." autocomplete="off">
+                        
+                        <button id="btn-submit-answer" class="btn-bento-primary w-full sm:w-auto px-8" onclick="submitCurrentAnswer()">Kirim Jawaban 🚀</button>
+                    </div>
+
+                    <div id="feedback-banner" class="hidden mt-5 p-4 rounded-2xl border-2 text-sm text-left">
+                        <p id="feedback-explanation" class="text-xs sm:text-sm leading-relaxed"></p>
+                    </div>
+
+                    <div id="next-action-wrapper" class="hidden mt-5 text-right">
+                        <button class="bg-amber-500 hover:bg-amber-400 text-white font-display font-extrabold py-3 px-6 rounded-2xl border-b-4 border-amber-700" onclick="proceedToNextQuestion()">
+                            Soal Selanjutnya ➡️
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. HASIL AKHIR DAN REVIEW JAWABAN MISI -->
+            <section id="screen-result" class="game-screen text-center">
+                <div class="text-6xl mb-2" id="result-icon">🏆</div>
+                <h2 class="text-2xl sm:text-3xl font-display font-black text-eco-900 mb-1" id="result-title">Misi Selesai!</h2>
+                <p id="result-subtitle" class="text-slate-600 text-sm font-semibold mb-4"></p>
+                
+                <div class="inline-block bg-eco-50 border-2 border-eco-200 rounded-2xl px-8 py-3 my-2">
+                    <div class="text-4xl sm:text-5xl font-display font-black text-eco-900" id="result-final-score">0</div>
+                    <div class="text-xs sm:text-sm font-bold text-eco-700 mt-1">Skor Akhir</div>
+                </div>
+
+                <!-- WADAH REVIEW JAWABAN GAME -->
+                <div class="text-left bg-slate-50 p-4 sm:p-6 rounded-2xl border-2 border-slate-200 my-6">
+                    <h3 class="font-display font-extrabold text-eco-900 text-base sm:text-lg mb-3 flex items-center gap-2">
+                        📋 Review Jawaban Misi Level <span id="game-review-lvl-title">1</span>
+                    </h3>
+                    <div id="game-review-container" class="space-y-3"></div>
+                </div>
+
+                <!-- TOMBOL NAVIGASI -->
+                <div class="flex flex-wrap gap-3 justify-center mt-6">
+                    <button id="btn-next-level" class="btn-bento-primary hidden" onclick="goToNextLevel()">
+                        <span>🚀 Level Berikutnya ➡️</span>
+                    </button>
+                    <button class="btn-bento-secondary" onclick="retryCurrentLevel()">
+                        <span>🔄 Ulangi Level Ini</span>
+                    </button>
+                    <button class="btn-bento-secondary" onclick="showEducationScreen()">
+                        <span>🗺️ Pilih Level Lain</span>
+                    </button>
+                    <a href="index.html" class="btn-bento-secondary">
+                        <span>🏠 Beranda Utama</span>
+                    </a>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL PETUNJUK PERMAINAN -->
+    <div id="modal-instructions" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full text-left border-b-8 border-slate-200 shadow-2xl">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-display font-extrabold text-eco-900 flex items-center gap-2">📖 Panduan & Aturan Game</h3>
+                <button onclick="toggleInstructions(false)" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold flex items-center justify-center">✕</button>
+            </div>
+            <div class="text-xs sm:text-sm text-slate-600 space-y-3 max-h-80 overflow-y-auto pr-1 leading-relaxed">
+                <p><strong>Selamat bertugas, Kader Adiwiyata! Berikut aturan permainannya:</strong></p>
+                <ul class="list-disc list-inside space-y-1.5">
+                    <li>Setiap level terdiri dari <strong>5 soal acak</strong> dari stok 20 soal per level.</li>
+                    <li><strong>Batas Waktu:</strong> Kamu memiliki <strong>30 detik</strong> untuk menjawab setiap soal.</li>
+                    <li>Kamu dibekali <strong>3 Hati (❤️❤️❤️)</strong>. Kehabisan waktu atau salah menjawab mengurangi 1 hati.</li>
+                    <li><strong>Sistem Kunci Level:</strong> Raih skor minimal <strong>80</strong> untuk membuka level berikutnya.</li>
+                    <li><strong>Format Jawaban Level 1 & 2:</strong> Masukkan rasio dua bagian $a:b$ (contoh: <code>3:5</code>).</li>
+                    <li><strong>Format Jawaban Level 3, 4, & 5:</strong> Masukkan angka hasil perhitungan (contoh: <code>12</code>).</li>
+                    <li><strong>Fitur Coret-coret:</strong> Tekan tombol 🎨 <strong>Coret-coret</strong> untuk membuka papan buram berhitung!</li>
+                </ul>
+            </div>
+            <button class="btn-bento-primary w-full mt-6" onclick="toggleInstructions(false)">
+                <span>Siap, Saya Paham! 👍</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL PAPAN CORET-CORET / KANVAS BURAM -->
+    <div id="modal-scratchpad" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex-col items-center justify-center p-3 sm:p-5">
+        <div class="bg-white rounded-3xl p-4 sm:p-6 w-full max-w-2xl border-2 border-slate-200 shadow-2xl flex flex-col gap-3">
+            <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                <h3 class="font-display font-extrabold text-eco-900 text-base sm:text-lg flex items-center gap-2">
+                    🎨 Papan Coret-coret / Cakar-cakar
+                </h3>
+                <button onclick="toggleScratchpad(false)" class="text-slate-500 hover:text-slate-800 font-bold text-xl px-2">✕</button>
+            </div>
+            
+            <div class="relative bg-amber-50/50 border-2 border-dashed border-amber-300 rounded-2xl overflow-hidden touch-none" style="height: 320px;">
+                <canvas id="scratchpad-canvas" class="w-full h-full cursor-crosshair"></canvas>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-center gap-2 pt-1">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-slate-500">Warna:</span>
+                    <button onclick="setCanvasColor('#1e293b')" class="w-7 h-7 rounded-full bg-slate-800 ring-2 ring-offset-1 ring-slate-400"></button>
+                    <button onclick="setCanvasColor('#2563eb')" class="w-7 h-7 rounded-full bg-blue-600"></button>
+                    <button onclick="setCanvasColor('#dc2626')" class="w-7 h-7 rounded-full bg-red-600"></button>
+                    <button onclick="setCanvasColor('#16a34a')" class="w-7 h-7 rounded-full bg-green-600"></button>
+                </div>
+
+                <div class="flex gap-2">
+                    <button onclick="clearScratchpad()" class="bg-rose-100 hover:bg-rose-200 text-rose-700 font-bold px-4 py-2 rounded-xl text-xs sm:text-sm border border-rose-300">
+                        🗑️ Hapus Semua
+                    </button>
+                    <button onclick="toggleScratchpad(false)" class="bg-eco-600 hover:bg-eco-500 text-white font-bold px-5 py-2 rounded-xl text-xs sm:text-sm shadow-sm">
+                        Selesai 👍
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwkDhlREa0XA18aDh1RaQCqEvOHdsqIYJGVHvbP1DuJcijfQye-IncZnWWVWUnCcu8/exec';
+
+        // EFEK SUARA INTERAKSI SINTESIS (WEB AUDIO API - ZERO DEPENDENCY)
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (type === 'correct') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.15);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.linearRampToValueAtTime(110, now + 0.25);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'tick') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'win') {
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        const noteOsc = ctx.createOscillator();
+                        const noteGain = ctx.createGain();
+                        noteOsc.connect(noteGain);
+                        noteGain.connect(ctx.destination);
+                        noteOsc.frequency.value = freq;
+                        noteGain.gain.setValueAtTime(0.2, now + idx * 0.1);
+                        noteGain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.1 + 0.25);
+                        noteOsc.start(now + idx * 0.1);
+                        noteOsc.stop(now + idx * 0.1 + 0.25);
+                    });
+                }
+            } catch(e) { console.warn(e); }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('btn-sound-toggle');
+            if (btn) btn.textContent = soundEnabled ? '🔊 Suara' : '🔇 Mute';
+        }
+
+        // DATABASE SOAL LENGKAP: STOK 20 SOAL PER LEVEL (TOTAL 100 SOAL)
+        const questionBank = {
+            level1: [
+                { q: "Di bank sampah sekolah, Kader Adiwiyata memilah 🍂 6 kg sampah organik dan 🥤 15 kg sampah anorganik. Berapa rasio sampah organik terhadap anorganik?", a: "6:15", exp: "Rasio awal organik : anorganik = 6 : 15." },
+                { q: "Di green house sekolah, terdapat 🌿 8 bibit puring dan 🌺 12 bibit bunga kertas. Berapa rasio bibit puring terhadap bunga kertas?", a: "8:12", exp: "Rasio puring : bunga kertas = 8 : 12." },
+                { q: "Untuk kerajinan daur ulang, siswa mengumpulkan 🍾 15 botol plastik dan 📦 10 galon daur ulang. Berapa rasio botol plastik terhadap galon?", a: "15:10", exp: "Rasio botol : galon = 15 : 10." },
+                { q: "Untuk menyiram tanaman TOGA, digunakan 🪣 9 ember air wudhu daur ulang dan 🪴 12 pot tanaman. Berapa rasio ember air terhadap pot?", a: "9:12", exp: "Rasio ember : pot = 9 : 12." },
+                { q: "Untuk pembuatan pupuk, kader mencampur 🍂 10 karung dedaunan kering dengan 💩 25 karung pupuk kandang. Berapa rasio dedaunan kering terhadap pupuk kandang?", a: "10:25", exp: "Rasio dedaunan : pupuk = 10 : 25." },
+                { q: "Di kebun toga sekolah, ada 🌱 12 bibit jahe dan 🌿 18 bibit kunyit. Berapa rasio bibit jahe terhadap kunyit?", a: "12:18", exp: "Rasio jahe : kunyit = 12 : 18." },
+                { q: "Siswa mengumpulkan 🥤 14 sedotan plastik dan 🍾 21 botol kaca untuk pameran daur ulang. Berapa rasio sedotan terhadap botol kaca?", a: "14:21", exp: "Rasio sedotan : botol kaca = 14 : 21." },
+                { q: "Dalam bak komposter, dimasukkan 🍂 15 kg dedaunan basah dan 🍁 20 kg dedaunan kering. Berapa rasio dedaunan basah terhadap dedaunan kering?", a: "15:20", exp: "Rasio dedaunan basah : kering = 15 : 20." },
+                { q: "Tim Adiwiyata menyediakan 🪴 16 pot gantung dan 🪴 24 pot duduk di koridor. Berapa rasio pot gantung terhadap pot duduk?", a: "16:24", exp: "Rasio pot gantung : pot duduk = 16 : 24." },
+                { q: "Di kolam retensi sekolah, terdapat 🐟 20 ekor ikan nila dan 🐟 30 ekor ikan lele. Berapa rasio ikan nila terhadap ikan lele?", a: "20:30", exp: "Rasio nila : lele = 20 : 30." },
+                { q: "Kader Adiwiyata menyiapkan 🧹 8 sapu lidi dan 🗑️ 12 tempat sampah organik. Berapa rasio sapu lidi terhadap tempat sampah?", a: "8:12", exp: "Rasio sapu : tempat sampah = 8 : 12." },
+                { q: "Untuk ecobrick, terkumpul 🍾 18 botol ukuran 600 ml dan 🍾 27 botol ukuran 1.500 ml. Berapa rasio botol 600 ml terhadap botol 1.500 ml?", a: "18:27", exp: "Rasio botol kecil : botol besar = 18 : 27." },
+                { q: "Di kebun buah sekolah, dipanen 🍋 15 buah jeruk nipis dan 🥭 25 buah mangga. Berapa rasio jeruk nipis terhadap mangga?", a: "15:25", exp: "Rasio jeruk nipis : mangga = 15 : 25." },
+                { q: "Tim drainase memasang 🕳️ 12 lubang biopori di depan dan 🕳️ 20 lubang biopori di belakang sekolah. Berapa rasio biopori depan terhadap belakang?", a: "12:20", exp: "Rasio biopori depan : belakang = 12 : 20." },
+                { q: "Untuk pembuatan MOL, dicampur 🍌 10 kg limbah buah dan 🍚 15 kg nasi basi. Berapa rasio limbah buah terhadap nasi basi?", a: "10:15", exp: "Rasio limbah buah : nasi basi = 10 : 15." },
+                { q: "Di nursery sekolah, terdapat 🌲 14 bibit pohon ketapang dan 🌳 21 bibit pohon mahoni. Berapa rasio bibit ketapang terhadap mahoni?", a: "14:21", exp: "Rasio ketapang : mahoni = 14 : 21." },
+                { q: "Kader lingkungan mencatat 💧 18 liter air wudhu daur ulang dan 💧 24 liter air hujan. Berapa rasio air wudhu daur ulang terhadap air hujan?", a: "18:24", exp: "Rasio air wudhu : air hujan = 18 : 24." },
+                { q: "Siswa mengumpulkan 📜 20 kg kertas koran dan 📦 30 kg kardus bekas. Berapa rasio kertas koran terhadap kardus bekas?", a: "20:30", exp: "Rasio koran : kardus = 20 : 30." },
+                { q: "Di taman vertikal, dipasang 🪴 15 pot lidah mertua dan 🪴 35 pot paku-pakuan. Berapa rasio lidah mertua terhadap paku-pakuan?", a: "15:35", exp: "Rasio lidah mertua : paku-pakuan = 15 : 35." },
+                { q: "Untuk vertikultur, digunakan 🪣 16 pipa PVC daur ulang dan 🪵 24 bambu. Berapa rasio pipa PVC terhadap bambu?", a: "16:24", exp: "Rasio pipa PVC : bambu = 16 : 24." }
+            ],
+            level2: [
+                { q: "Untuk adonan komposter, dibutuhkan 🍂 15 kg dedaunan gugur dan 💧 10 liter aktivator MOL. Sederhanakan rasio dedaunan terhadap aktivator!", a: "3:2", exp: "FPB 15 dan 10 adalah 5. Masing-masing dibagi 5 → 3 : 2." },
+                { q: "Di kebun sekolah, ada 🌳 12 pohon ketapang dan 🌲 20 pohon mahoni. Sederhanakan rasio pohon ketapang terhadap mahoni!", a: "3:5", exp: "FPB 12 dan 20 adalah 4. Masing-masing dibagi 4 → 3 : 5." },
+                { q: "Siswa mengumpulkan 🍾 18 botol plastik dan 🥫 24 kaleng alumunium. Sederhanakan rasio botol plastik terhadap kaleng!", a: "3:4", exp: "FPB 18 dan 24 adalah 6. Masing-masing dibagi 6 → 3 : 4." },
+                { q: "Tim Adiwiyata membuat 🧱 14 ecobrick kecil dan 🍾 21 ecobrick besar. Sederhanakan rasio ecobrick kecil terhadap ecobrick besar!", a: "2:3", exp: "FPB 14 dan 21 adalah 7. Masing-masing dibagi 7 → 2 : 3." },
+                { q: "Untuk pembuatan POC, dicampur 🌿 20 kg limbah sayuran dan 🍌 8 kg kulit buah. Sederhanakan rasio limbah sayuran terhadap kulit buah!", a: "5:2", exp: "FPB 20 dan 8 adalah 4. Masing-masing dibagi 4 → 5 : 2." },
+                { q: "Di taman TOGA, terdapat 🌿 16 bibit temulawak dan 🌿 24 bibit kunyit. Sederhanakan rasio bibit temulawak terhadap kunyit!", a: "2:3", exp: "FPB 16 dan 24 adalah 8. Masing-masing dibagi 8 → 2 : 3." },
+                { q: "Bank sampah menerima 📦 25 kg kardus dan 📜 15 kg kertas HVS. Sederhanakan rasio kardus terhadap kertas HVS!", a: "5:3", exp: "FPB 25 dan 15 adalah 5. Masing-masing dibagi 5 → 5 : 3." },
+                { q: "Kader lingkungan memasang 🕳️ 18 biopori di lapangan dan 🕳️ 12 biopori di kebun. Sederhanakan rasio biopori lapangan terhadap kebun!", a: "3:2", exp: "FPB 18 dan 12 adalah 6. Masing-masing dibagi 6 → 3 : 2." },
+                { q: "Di rumah hijau, terdapat 🪴 28 pot tanaman daun dan 🪴 21 pot tanaman bunga. Sederhanakan rasio tanaman daun terhadap bunga!", a: "4:3", exp: "FPB 28 dan 21 adalah 7. Masing-masing dibagi 7 → 4 : 3." },
+                { q: "Untuk green house, digunakan 🪵 30 batang bambu dan 🪵 12 batang kayu bekas. Sederhanakan rasio bambu terhadap kayu!", a: "5:2", exp: "FPB 30 dan 12 adalah 6. Masing-masing dibagi 6 → 5 : 2." },
+                { q: "Kolam gizi Adiwiyata menampung 🐟 35 ikan nila dan 🐟 15 ikan gurame. Sederhanakan rasio ikan nila terhadap gurame!", a: "7:3", exp: "FPB 35 dan 15 adalah 5. Masing-masing dibagi 5 → 7 : 3." },
+                { q: "Tim hemat energi mengukur pemakaian ⚡ 24 lampu LED dan ⚡ 18 lampu biasa. Sederhanakan rasio lampu LED terhadap lampu biasa!", a: "4:3", exp: "FPB 24 dan 18 adalah 6. Masing-masing dibagi 6 → 4 : 3." },
+                { q: "Untuk penyiraman, ditampung 💧 40 liter air hujan dan 💧 16 liter air bekas wudhu. Sederhanakan rasio air hujan terhadap air wudhu!", a: "5:2", exp: "FPB 40 dan 16 adalah 8. Masing-masing dibagi 8 → 5 : 2." },
+                { q: "Di area parkir sepeda, terdapat 🚲 32 sepeda siswa dan 🚲 12 sepeda guru. Sederhanakan rasio sepeda siswa terhadap sepeda guru!", a: "8:3", exp: "FPB 32 dan 12 adalah 4. Masing-masing dibagi 4 → 8 : 3." },
+                { q: "Pameran Adiwiyata menampilkan 🎨 27 lukisan bahan alam dan 🧺 18 kerajinan daur ulang. Sederhanakan rasio lukisan terhadap kerajinan!", a: "3:2", exp: "FPB 27 dan 18 adalah 9. Masing-masing dibagi 9 → 3 : 2." },
+                { q: "Kader kebersihan mengumpulkan 🗑️ 20 ember sampah organik dan 🗑️ 35 ember anorganik. Sederhanakan rasio sampah organik terhadap anorganik!", a: "4:7", exp: "FPB 20 dan 35 adalah 5. Masing-masing dibagi 5 → 4 : 7." },
+                { q: "Taman sekolah ditanami 🌹 30 mawar merah dan 🌼 45 melati putih. Sederhanakan rasio mawar merah terhadap melati putih!", a: "2:3", exp: "FPB 30 dan 45 adalah 15. Masing-masing dibagi 15 → 2 : 3." },
+                { q: "Vertikultur membutuhkan 🪣 24 botol bekas minyak dan 🍾 36 botol bekas air mineral. Sederhanakan rasio botol minyak terhadap air mineral!", a: "2:3", exp: "FPB 24 dan 36 adalah 12. Masing-masing dibagi 12 → 2 : 3." },
+                { q: "Siswa mengolah 💩 42 kg pupuk kandang dan 🍂 18 kg dedaunan kering. Sederhanakan rasio pupuk kandang terhadap dedaunan!", a: "7:3", exp: "FPB 42 dan 18 adalah 6. Masing-masing dibagi 6 → 7 : 3." },
+                { q: "Di laboratorium hidroponik, terdapat 🌱 50 netpot kangkung dan 🌱 20 netpot bayam. Sederhanakan rasio kangkung terhadap bayam!", a: "5:2", exp: "FPB 50 dan 20 adalah 10. Masing-masing dibagi 10 → 5 : 2." }
+            ],
+            level3: [
+                { q: "Rasio dedaunan kering dan pupuk kandang adalah 🍂:💩 = 4:3. Jika kader menggunakan 16 kg dedaunan kering, berapa kg pupuk kandang yang dibutuhkan?", a: "12", exp: "Dedaunan 16 kg (4 x 4). Maka pupuk kandang = 3 x 4 = 12 kg." },
+                { q: "Rasio botol daur ulang dan kaleng alumunium adalah 🍾:🥫 = 3:5. Jika terkumpul 15 botol plastik, berapa kaleng alumunium yang terkumpul?", a: "25", exp: "Botol 15 buah (3 x 5). Maka kaleng = 5 x 5 = 25 buah." },
+                { q: "Rasio pupuk cair dan air campuran adalah 🧪:💧 = 2:7. Jika kader menggunakan 8 liter pupuk cair, berapa liter air campuran yang dibutuhkan?", a: "28", exp: "Pupuk cair 8 liter (2 x 4). Maka air campuran = 7 x 4 = 28 liter." },
+                { q: "Rasio bibit TOGA dan bibit pohon pelindung adalah 🪴:🌳 = 3:4. Jika ditanam 12 bibit TOGA, berapa bibit pohon pelindung yang ditanam?", a: "16", exp: "Bibit TOGA 12 (3 x 4). Maka pohon pelindung = 4 x 4 = 16 bibit." },
+                { q: "Rasio sampah kertas dan plastik daur ulang adalah 📜:🥤 = 5:2. Jika terkumpul 30 kg sampah kertas, berapa kg sampah plastik yang terkumpul?", a: "12", exp: "Kertas 30 kg (5 x 6). Maka sampah plastik = 2 x 6 = 12 kg." },
+                { q: "Rasio biopori kelas 7A dan 7B adalah 👦:👧 = 5:3. Jika kelas 7A membuat 20 biopori, berapa biopori yang dibuat kelas 7B?", a: "12", exp: "Kelas 7A 20 biopori (5 x 4). Maka kelas 7B = 3 x 4 = 12 biopori." },
+                { q: "Rasio limbah buah dan air kelapa untuk POC adalah 🍌:🥥 = 2:5. Jika kader menggunakan 10 kg limbah buah, berapa liter air kelapa yang dibutuhkan?", a: "25", exp: "Limbah buah 10 kg (2 x 5). Maka air kelapa = 5 x 5 = 25 liter." },
+                { q: "Rasio pot lidah mertua dan sansivera adalah 🪴:🪴 = 3:7. Jika terdapat 9 pot lidah mertua, berapa jumlah pot sansivera?", a: "21", exp: "Lidah mertua 9 pot (3 x 3). Maka sansivera = 7 x 3 = 21 pot." },
+                { q: "Rasio ecobrick besar dan kecil adalah 🍾:🍾 = 4:5. Jika terkumpul 20 ecobrick besar, berapa ecobrick kecil yang terkumpul?", a: "25", exp: "Ecobrick besar 20 (4 x 5). Maka ecobrick kecil = 5 x 5 = 25 botol." },
+                { q: "Rasio bibit mahoni dan ketapang kencana adalah 🌲:🌳 = 2:3. Jika ada 18 bibit mahoni, berapa jumlah bibit ketapang kencana?", a: "27", exp: "Mahoni 18 bibit (2 x 9). Maka ketapang kencana = 3 x 9 = 27 bibit." },
+                { q: "Rasio kompos matang dan tanah subur adalah 💩:🪴 = 1:4. Jika digunakan 6 kg kompos, berapa kg tanah subur yang dibutuhkan?", a: "24", exp: "Kompos 6 kg (1 x 6). Maka tanah subur = 4 x 6 = 24 kg." },
+                { q: "Rasio bibit cabai dan terung di kebun TOGA adalah 🌶️:🍆 = 5:4. Jika ditanam 25 bibit cabai, berapa jumlah bibit terung?", a: "20", exp: "Cabai 25 bibit (5 x 5). Maka terung = 4 x 5 = 20 bibit." },
+                { q: "Rasio tempat sampah organik dan anorganik adalah 🗑️:🗑️ = 3:2. Jika ada 18 tempat sampah organik, berapa tempat sampah anorganik?", a: "12", exp: "Organik 18 buah (3 x 6). Maka anorganik = 2 x 6 = 12 buah." },
+                { q: "Rasio kran hemat air dan kran biasa adalah 🚰:🚰 = 7:2. Jika dipasang 21 kran hemat air, berapa jumlah kran biasa?", a: "6", exp: "Kran hemat 21 buah (7 x 3). Maka kran biasa = 2 x 3 = 6 buah." },
+                { q: "Rasio bibit puring dan melati di green house adalah 🌿:🌼 = 4:7. Jika ada 16 bibit puring, berapa jumlah bibit melati?", a: "28", exp: "Puring 16 bibit (4 x 4). Maka melati = 7 x 4 = 28 bibit." },
+                { q: "Rasio minyak jelantah dan bahan sabun adalah 🛢️:🧪 = 3:1. Jika ada 15 liter minyak jelantah, berapa liter bahan sabun yang dibutuhkan?", a: "5", exp: "Minyak jelantah 15 liter (3 x 5). Maka bahan sabun = 1 x 5 = 5 liter." },
+                { q: "Rasio nila merah dan nila hitam di kolam gizi adalah 🐟:🐟 = 5:8. Jika ada 30 nila merah, berapa ekor nila hitam?", a: "48", exp: "Nila merah 30 ekor (5 x 6). Maka nila hitam = 8 x 6 = 48 ekor." },
+                { q: "Rasio bambu penyangga dan tanaman merambat adalah 🪵:🌿 = 3:5. Jika dipasang 18 bambu penyangga, berapa tanaman merambat yang ditanam?", a: "30", exp: "Bambu 18 batang (3 x 6). Maka tanaman merambat = 5 x 6 = 30 tanaman." },
+                { q: "Rasio limbah sayuran dan dedaunan kering adalah 🥬:🍂 = 2:3. Jika kader memasukkan 14 kg limbah sayuran, berapa kg dedaunan kering yang dibutuhkan?", a: "21", exp: "Limbah sayuran 14 kg (2 x 7). Maka dedaunan = 3 x 7 = 21 kg." },
+                { q: "Rasio kaos bekas dan kain perca untuk kerajinan adalah 👕:🧵 = 4:9. Jika terkumpul 16 kaos bekas, berapa lembar kain perca yang terkumpul?", a: "36", exp: "Kaos bekas 16 (4 x 4). Maka kain perca = 9 x 4 = 36 lembar." }
+            ],
+            level4: [
+                { q: "12 botol plastik daur ulang dapat dibuat menjadi 3 wadah ecobrick. Berapa botol plastik yang dibutuhkan untuk membuat 8 wadah ecobrick?", a: "32", exp: "1 ecobrick = 12 ÷ 3 = 4 botol. Untuk 8 ecobrick = 8 x 4 = 32 botol." },
+                { q: "Dengan 4 liter pupuk cair organik, siswa menyiram 10 pot tanaman. Berapa liter pupuk cair yang dibutuhkan untuk 25 pot tanaman?", a: "10", exp: "1 liter = 10 ÷ 4 = 2,5 pot. Untuk 25 pot = 25 ÷ 2,5 = 10 liter." },
+                { q: "6 kader Adiwiyata menanam 18 bibit pohon dalam 1 jam. Berapa bibit pohon yang dapat ditanam oleh 10 siswa dalam waktu yang sama?", a: "30", exp: "1 siswa = 18 ÷ 6 = 3 bibit. 10 siswa = 10 x 3 = 30 bibit." },
+                { q: "Pembuatan POC menghasilkan 5 liter POC dari 2 kg sisa buah. Berapa liter POC yang dihasilkan jika digunakan 6 kg sisa buah?", a: "15", exp: "1 kg sisa buah = 5 ÷ 2 = 2,5 liter. 6 kg = 6 x 2,5 = 15 liter." },
+                { q: "15 kg sampah organik menghasilkan 6 kg pupuk kompos. Berapa kg sampah organik yang dibutuhkan untuk menghasilkan 10 kg kompos?", a: "25", exp: "1 kg kompos = 15 ÷ 6 = 2,5 kg sampah. 10 kg kompos = 10 x 2,5 = 25 kg." },
+                { q: "Untuk menanam 15 bibit toga, dibutuhkan lahan 3 m². Berapa m² luas lahan yang dibutuhkan untuk 40 bibit toga?", a: "8", exp: "1 m² = 15 ÷ 3 = 5 bibit. Untuk 40 bibit = 40 ÷ 5 = 8 m²." },
+                { q: "8 kg kardus bekas dihargai Rp 16.000 di bank sampah. Berapa rupiah uang yang diterima siswa jika menjual 25 kg kardus bekas?", a: "50000", exp: "1 kg kardus = 16.000 ÷ 8 = Rp 2.000. 25 kg = 25 x 2.000 = Rp 50.000." },
+                { q: "Dengan 5 liter air wudhu daur ulang, siswa membersihkan 20 pot. Berapa pot yang dapat dibersihkan dengan 12 liter air daur ulang?", a: "48", exp: "1 liter = 20 ÷ 5 = 4 pot. 12 liter = 12 x 4 = 48 pot." },
+                { q: "10 kg dedaunan kering membutuhkan 2 liter aktivator MOL. Berapa liter aktivator MOL yang dibutuhkan untuk 35 kg dedaunan kering?", a: "7", exp: "1 liter MOL = 10 ÷ 2 = 5 kg daun. Untuk 35 kg = 35 ÷ 5 = 7 liter." },
+                { q: "Dibutuhkan 6 botol plastik bekas untuk 2 pot gantung. Berapa botol plastik bekas yang dibutuhkan untuk membuat 15 pot gantung?", a: "45", exp: "1 pot gantung = 6 ÷ 2 = 3 botol. 15 pot = 15 x 3 = 45 botol." },
+                { q: "Dalam 2 jam, 4 siswa memilah 14 kg sampah plastik. Berapa kg sampah plastik yang dapat dipilah oleh 10 siswa dalam waktu yang sama?", a: "35", exp: "1 siswa = 14 ÷ 4 = 3,5 kg. 10 siswa = 10 x 3,5 = 35 kg." },
+                { q: "Biopori seluas 4 m² menyerap 20 liter air hujan per menit. Berapa liter air hujan per menit yang diserap area biopori seluas 15 m²?", a: "75", exp: "1 m² = 20 ÷ 4 = 5 liter. 15 m² = 15 x 5 = 75 liter." },
+                { q: "Untuk 3 kg kertas daur ulang, dibutuhkan 12 kg kertas bekas. Berapa kg kertas bekas yang dibutuhkan untuk 7 kg kertas daur ulang?", a: "28", exp: "1 kg kertas daur ulang = 12 ÷ 3 = 4 kg kertas bekas. 7 kg = 7 x 4 = 28 kg." },
+                { q: "1 panel surya menghasilkan listrik 150 Watt per 2 jam. Berapa Watt listrik yang dihasilkan oleh 6 panel surya dalam waktu yang sama?", a: "900", exp: "6 panel surya = 6 x 150 Watt = 900 Watt." },
+                { q: "Dengan 4 drum komposter, sekolah mengolah 80 kg sampah daun per bulan. Berapa drum komposter yang dibutuhkan untuk 180 kg sampah daun?", a: "9", exp: "1 drum = 80 ÷ 4 = 20 kg. Untuk 180 kg = 180 ÷ 20 = 9 drum." },
+                { q: "Siswa menggunakan 9 liter air hujan untuk 18 pot bibit mahoni. Berapa liter air hujan yang dibutuhkan untuk menyiram 30 pot bibit mahoni?", a: "15", exp: "1 liter air = 18 ÷ 9 = 2 pot. Untuk 30 pot = 30 ÷ 2 = 15 liter." },
+                { q: "12 botol ecobrick dapat dibuat menjadi 2 bata susun bangku taman. Berapa botol ecobrick yang dibutuhkan untuk 9 bata susun?", a: "54", exp: "1 bata = 12 ÷ 2 = 6 botol. 9 bata = 9 x 6 = 54 botol." },
+                { q: "5 meter pipa vertikultur menampung 25 bibit kangkung. Berapa bibit kangkung yang dapat ditampung dalam 12 meter pipa vertikultur?", a: "60", exp: "1 meter pipa = 25 ÷ 5 = 5 bibit. 12 meter = 12 x 5 = 60 bibit." },
+                { q: "Untuk 10 liter POC, dibutuhkan 4 kg gula merah. Berapa kg gula merah yang dibutuhkan untuk membuat 25 liter POC?", a: "10", exp: "1 kg gula = 10 ÷ 4 = 2,5 liter POC. Untuk 25 liter = 25 ÷ 2,5 = 10 kg." },
+                { q: "8 kg minyak jelantah menghasilkan 6 kg sabun daur ulang. Berapa kg sabun daur ulang yang dihasilkan dari 20 kg minyak jelantah?", a: "15", exp: "1 kg minyak = 6 ÷ 8 = 0,75 kg sabun. 20 kg = 20 x 0,75 = 15 kg." }
+            ],
+            level5: [
+                { q: "4 kader Adiwiyata membersihkan kebun sekolah dalam 6 jam. Berapa jam yang dibutuhkan jika dikerjakan oleh 8 kader?", a: "3", exp: "Perbandingan berbalik nilai: (4 x 6) ÷ 8 = 24 ÷ 8 = 3 jam." },
+                { q: "Untuk menyiram kebun sekolah, dibutuhkan 3 selang air selama 20 menit. Jika menggunakan 2 selang air, berapa menit waktu yang dibutuhkan?", a: "30", exp: "Perbandingan berbalik nilai: (3 x 20) ÷ 2 = 60 ÷ 2 = 30 menit." },
+                { q: "4 kader Adiwiyata memilah sampah di bank sampah dalam 3 hari. Berapa hari yang dibutuhkan jika dikerjakan oleh 6 kader?", a: "2", exp: "Perbandingan berbalik nilai: (4 x 3) ÷ 6 = 12 ÷ 6 = 2 hari." },
+                { q: "Pembuatan 50 ecobrick selesai dalam 12 hari oleh 5 siswa. Berapa hari yang dibutuhkan jika dikerjakan oleh 10 siswa?", a: "6", exp: "Perbandingan berbalik nilai: (5 x 12) ÷ 10 = 60 ÷ 10 = 6 hari." },
+                { q: "3 kran hemat air mengisi kolam retensi dalam 4 jam. Berapa jam waktu yang dibutuhkan jika menggunakan 2 kran hemat air?", a: "6", exp: "Perbandingan berbalik nilai: (3 x 4) ÷ 2 = 12 ÷ 2 = 6 jam." },
+                { q: "Air wudhu daur ulang cukup untuk 15 siswa selama 8 hari. Jika jumlah siswa menjadi 20 orang, air akan habis dalam... hari", a: "6", exp: "Perbandingan berbalik nilai: (15 x 8) ÷ 20 = 120 ÷ 20 = 6 hari." },
+                { q: "Penanaman 100 bibit pohon selesai dalam 10 hari oleh 6 siswa. Berapa hari yang dibutuhkan jika dikerjakan oleh 15 siswa?", a: "4", exp: "Perbandingan berbalik nilai: (6 x 10) ÷ 15 = 60 ÷ 15 = 4 hari." },
+                { q: "Memanen kompos dari 5 komposter selesai dalam 3 jam oleh 8 siswa. Jika hanya ada 6 siswa, berapa jam yang dibutuhkan?", a: "4", exp: "Perbandingan berbalik nilai: (8 x 3) ÷ 6 = 24 ÷ 6 = 4 jam." },
+                { q: "Pupuk cair organik cukup untuk 12 pot tanaman selama 15 hari. Jika tanaman bertambah menjadi 20 pot, pupuk habis dalam... hari", a: "9", exp: "Perbandingan berbalik nilai: (12 x 15) ÷ 20 = 180 ÷ 20 = 9 hari." },
+                { q: "Kecepatan kerja bakti 60 m²/jam memerlukan 4 jam untuk membersihkan kebun. Jika kecepatan naik jadi 80 m²/jam, berapa jam yang dibutuhkan?", a: "3", exp: "Perbandingan berbalik nilai: (60 x 4) ÷ 80 = 240 ÷ 80 = 3 jam." },
+                { q: "Mengosongkan bak air hujan butuh 4 pompa hemat energi selama 6 jam. Berapa jam yang dibutuhkan jika menggunakan 3 pompa?", a: "8", exp: "Perbandingan berbalik nilai: (4 x 6) ÷ 3 = 24 ÷ 3 = 8 jam." },
+                { q: "Pencacahan sampah organik dengan 2 mesin selesai dalam 9 jam. Berapa jam yang dibutuhkan jika menggunakan 3 mesin?", a: "6", exp: "Perbandingan berbalik nilai: (2 x 9) ÷ 3 = 18 ÷ 3 = 6 jam." },
+                { q: "Pakan organik cukup untuk 30 ikan selama 20 hari. Jika ikan bertambah jadi 40 ekor, pakan habis dalam... hari", a: "15", exp: "Perbandingan berbalik nilai: (30 x 20) ÷ 40 = 600 ÷ 40 = 15 hari." },
+                { q: "Membuat 120 biopori oleh 10 siswa selesai dalam 6 hari. Berapa hari yang dibutuhkan jika dikerjakan oleh 12 siswa?", a: "5", exp: "Perbandingan berbalik nilai: (10 x 6) ÷ 12 = 60 ÷ 12 = 5 hari." },
+                { q: "Mengecat 30 pot daur ulang oleh 3 siswa butuh 8 jam. Berapa jam yang dibutuhkan oleh 6 siswa?", a: "4", exp: "Perbandingan berbalik nilai: (3 x 8) ÷ 6 = 24 ÷ 6 = 4 jam." },
+                { q: "Larutan MOL untuk 16 komposter cukup untuk 15 hari. Jika komposter bertambah jadi 20 buah, MOL habis dalam... hari", a: "12", exp: "Perbandingan berbalik nilai: (16 x 15) ÷ 20 = 240 ÷ 20 = 12 hari." },
+                { q: "Pembersihan drainase oleh 8 siswa selesai dalam 9 jam. Berapa siswa yang dibutuhkan agar selesai dalam 6 jam?", a: "12", exp: "Perbandingan berbalik nilai: (8 x 9) ÷ 6 = 72 ÷ 6 = 12 siswa." },
+                { q: "Pengolahan 200 kg sampah daur ulang oleh 5 siswa butuh 12 hari. Berapa hari yang dibutuhkan oleh 15 siswa?", a: "4", exp: "Perbandingan berbalik nilai: (5 x 12) ÷ 15 = 60 ÷ 15 = 4 hari." },
+                { q: "Penyiraman kebun hidroponik dengan 4 pipa irigasi selesai dalam 15 menit. Berapa menit yang dibutuhkan jika pakai 6 pipa?", a: "10", exp: "Perbandingan berbalik nilai: (4 x 15) ÷ 6 = 60 ÷ 6 = 10 menit." },
+                { q: "Pengumpulan 500 botol ecobrick oleh 12 siswa selesai dalam 10 hari. Berapa hari yang dibutuhkan oleh 15 siswa?", a: "8", exp: "Perbandingan berbalik nilai: (12 x 10) ÷ 15 = 120 ÷ 15 = 8 hari." }
+            ]
+        };
+
+        let currentStudentName = "";
+        let currentLevel = 1;
+        let unlockedLevel = 1;
+        let currentQIdx = 0;
+        let sessionScore = 0;
+        let sessionLives = 3;
+        let active5Questions = [];
+        let gameReviewHistory = [];
+        let timerInterval = null;
+        let timeLeft = 30;
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function switchScreen(screenId) {
+            stopTimer();
+            document.querySelectorAll('.game-screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function showSplashScreen() { switchScreen('screen-splash'); }
+
+        function showEducationScreen() {
+            updateLevelCardsUI();
+            switchScreen('screen-education');
+        }
+
+        function toggleInstructions(show) {
+            const modal = document.getElementById('modal-instructions');
+            if (show) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        function handleStartGame() {
+            const nameInput = document.getElementById('input-student-name').value.trim();
+            if (!nameInput) { alert("Sebutkan nama lengkapmu!"); return; }
+            currentStudentName = nameInput;
+            document.getElementById('display-student-name-edu').textContent = currentStudentName;
+            
+            const savedUnlocked = localStorage.getItem(`${currentStudentName}_unlockedLevel`);
+            unlockedLevel = savedUnlocked ? parseInt(savedUnlocked) : 1;
+            
+            updateLevelCardsUI();
+            switchScreen('screen-education');
+        }
+
+        function updateLevelCardsUI() {
+            for (let i = 1; i <= 5; i++) {
+                const card = document.getElementById(`card-lvl-${i}`);
+                const statusSpan = document.getElementById(`status-lvl-${i}`);
+
+                if (i <= unlockedLevel) {
+                    card.className = "bento-card-tile bento-card-tile-active";
+                    statusSpan.className = "font-bold text-xs text-eco-600";
+                    statusSpan.textContent = "Terbuka 🔓";
+                } else {
+                    card.className = "bento-card-tile bento-card-tile-locked";
+                    statusSpan.className = "font-bold text-xs text-slate-400";
+                    statusSpan.textContent = `🔒 Terkunci (Butuh Lvl ${i-1})`;
+                }
+            }
+        }
+
+        function handleSelectLevel(lvl) {
+            if (lvl > unlockedLevel) {
+                alert(`🔒 Level ${lvl} masih terkunci! Selesaikan Level ${lvl - 1} dengan skor minimal 80 untuk membukanya.`);
+                return;
+            }
+
+            currentLevel = lvl;
+            sessionScore = 0;
+            sessionLives = 3;
+            currentQIdx = 0;
+            gameReviewHistory = [];
+
+            const pool = questionBank[`level${currentLevel}`] || questionBank.level1;
+            active5Questions = shuffleArray([...pool]).slice(0, 5);
+
+            document.getElementById('hud-level-title').textContent = `Level ${currentLevel}`;
+            document.getElementById('hud-score').textContent = sessionScore;
+            document.getElementById('hud-lives').textContent = "❤️".repeat(sessionLives);
+            switchScreen('screen-gameplay');
+            loadQuestionUI();
+        }
+
+        function retryCurrentLevel() {
+            handleSelectLevel(currentLevel);
+        }
+
+        function goToNextLevel() {
+            if (currentLevel < 5 && currentLevel + 1 <= unlockedLevel) {
+                handleSelectLevel(currentLevel + 1);
+            } else {
+                showEducationScreen();
+            }
+        }
+
+        // TIMER SYSTEM HITUNG MUNDUR (30 DETIK)
+        function startTimer() {
+            stopTimer();
+            timeLeft = 30;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 5 && timeLeft > 0) {
+                    playSound('tick');
+                }
+                if (timeLeft <= 0) {
+                    stopTimer();
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function updateTimerDisplay() {
+            const el = document.getElementById('hud-timer');
+            if (el) {
+                el.textContent = timeLeft;
+                if (timeLeft <= 5) {
+                    el.parentElement.className = "bg-rose-100 border border-rose-300 px-3 py-1 rounded-xl font-display font-extrabold text-rose-800 text-sm animate-pulse";
+                } else {
+                    el.parentElement.className = "bg-sky-50 border border-sky-200 px-3 py-1 rounded-xl font-display font-extrabold text-sky-800 text-sm";
+                }
+            }
+        }
+
+        function handleTimeOut() {
+            const q = active5Questions[currentQIdx];
+            sessionLives--;
+            playSound('wrong');
+
+            gameReviewHistory.push({
+                num: currentQIdx + 1,
+                question: q.q,
+                userAnswer: "⏰ Waktu Habis",
+                correctAnswer: q.a,
+                isCorrect: false,
+                explanation: q.exp
+            });
+
+            const banner = document.getElementById('feedback-banner');
+            const exp = document.getElementById('feedback-explanation');
+            banner.classList.remove('hidden');
+
+            document.getElementById('hud-lives').textContent = "❤️".repeat(sessionLives) + "🖤".repeat(3 - sessionLives);
+            banner.className = "mt-5 p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 text-rose-900 text-sm text-left font-bold";
+            exp.textContent = `⏰ Waktu Habis! Jawaban benar: ${q.a}. (${q.exp})`;
+            if(window.MathJax) MathJax.typesetPromise([exp]);
+
+            document.getElementById('input-part1').disabled = true;
+            document.getElementById('input-part2').disabled = true;
+            document.getElementById('input-single-val').disabled = true;
+
+            document.getElementById('btn-submit-answer').classList.add('hidden');
+            document.getElementById('next-action-wrapper').classList.remove('hidden');
+
+            sendDataToSheet(q.q, "Waktu Habis", "Salah", 0);
+        }
+
+        function loadQuestionUI() {
+            const q = active5Questions[currentQIdx];
+
+            document.getElementById('hud-q-number').textContent = `(Soal ${currentQIdx + 1} dari 5)`;
+
+            const isRatio = currentLevel <= 2;
+            document.getElementById('ratio-input-group').classList.toggle('hidden', !isRatio);
+            document.getElementById('input-single-val').classList.toggle('hidden', isRatio);
+
+            const pText = document.getElementById('question-prompt-text');
+            pText.textContent = `${currentQIdx + 1}. ${q.q}`;
+            if(window.MathJax) MathJax.typesetPromise([pText]);
+
+            document.getElementById('input-part1').value = '';
+            document.getElementById('input-part2').value = '';
+            document.getElementById('input-single-val').value = '';
+            
+            document.getElementById('input-part1').disabled = false;
+            document.getElementById('input-part2').disabled = false;
+            document.getElementById('input-single-val').disabled = false;
+
+            document.getElementById('feedback-banner').classList.add('hidden');
+            document.getElementById('btn-submit-answer').classList.remove('hidden');
+            document.getElementById('next-action-wrapper').classList.add('hidden');
+
+            startTimer();
+        }
+
+        function submitCurrentAnswer() {
+            stopTimer();
+            const q = active5Questions[currentQIdx];
+            let userAns = "";
+
+            if (currentLevel <= 2) {
+                const p1 = document.getElementById('input-part1').value.trim();
+                const p2 = document.getElementById('input-part2').value.trim();
+                if(!p1 || !p2) { alert("Isikan perbandingan a dan b!"); startTimer(); return; }
+                userAns = `${p1}:${p2}`;
+            } else {
+                userAns = document.getElementById('input-single-val').value.trim();
+                if(!userAns) { alert("Ketik angka jawabanmu!"); startTimer(); return; }
+            }
+
+            const cleanUser = userAns.replace(/\s+/g, '');
+            const cleanCorrect = q.a.replace(/\s+/g, '');
+            let isCorrect = false;
+
+            if (currentLevel === 1) {
+                const uParts = cleanUser.split(':');
+                const cParts = cleanCorrect.split(':');
+                if (uParts.length === 2 && cParts.length === 2 && parseFloat(uParts[1]) !== 0) {
+                    isCorrect = (parseFloat(uParts[0]) / parseFloat(uParts[1])) === (parseFloat(cParts[0]) / parseFloat(cParts[1]));
+                }
+            } else {
+                isCorrect = (cleanUser === cleanCorrect);
+            }
+
+            gameReviewHistory.push({
+                num: currentQIdx + 1,
+                question: q.q,
+                userAnswer: userAns,
+                correctAnswer: q.a,
+                isCorrect: isCorrect,
+                explanation: q.exp
+            });
+
+            const banner = document.getElementById('feedback-banner');
+            const exp = document.getElementById('feedback-explanation');
+            banner.classList.remove('hidden');
+
+            if(isCorrect) {
+                playSound('correct');
+                sessionScore += 20;
+                document.getElementById('hud-score').textContent = sessionScore;
+                banner.className = "mt-5 p-4 rounded-2xl border-2 border-eco-300 bg-eco-50 text-eco-900 text-sm text-left font-bold";
+                exp.textContent = "🎉 Benar sekali! " + q.exp;
+            } else {
+                playSound('wrong');
+                sessionLives--;
+                document.getElementById('hud-lives').textContent = "❤️".repeat(sessionLives) + "🖤".repeat(3 - sessionLives);
+                banner.className = "mt-5 p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 text-rose-900 text-sm text-left font-bold";
+                exp.textContent = `❌ Belum tepat. Jawaban benar: ${q.a}. (${q.exp})`;
+            }
+            if(window.MathJax) MathJax.typesetPromise([exp]);
+
+            document.getElementById('input-part1').disabled = true;
+            document.getElementById('input-part2').disabled = true;
+            document.getElementById('input-single-val').disabled = true;
+
+            document.getElementById('btn-submit-answer').classList.add('hidden');
+            document.getElementById('next-action-wrapper').classList.remove('hidden');
+
+            sendDataToSheet(q.q, userAns, isCorrect ? "Benar" : "Salah", isCorrect ? 20 : 0);
+        }
+
+        function proceedToNextQuestion() {
+            if(sessionLives <= 0) {
+                showResult();
+                return;
+            }
+            currentQIdx++;
+            if(currentQIdx < 5) {
+                loadQuestionUI();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            stopTimer();
+            document.getElementById('result-final-score').textContent = sessionScore;
+            document.getElementById('game-review-lvl-title').textContent = currentLevel;
+
+            const isVictory = sessionScore >= 80;
+            const titleEl = document.getElementById('result-title');
+            const subEl = document.getElementById('result-subtitle');
+            const iconEl = document.getElementById('result-icon');
+            const nextLvlBtn = document.getElementById('btn-next-level');
+
+            if (isVictory) {
+                playSound('win');
+                iconEl.textContent = "🏆";
+                titleEl.textContent = `Misi Level ${currentLevel} Tuntas!`;
+                subEl.textContent = `Selamat ${currentStudentName}! Kamu lulus dengan skor ${sessionScore}. Level berikutnya telah terbuka!`;
+
+                if (currentLevel === unlockedLevel && unlockedLevel < 5) {
+                    unlockedLevel++;
+                    localStorage.setItem(`${currentStudentName}_unlockedLevel`, unlockedLevel);
+                }
+
+                if (currentLevel < 5) {
+                    nextLvlBtn.classList.remove('hidden');
+                } else {
+                    nextLvlBtn.classList.add('hidden');
+                }
+            } else {
+                playSound('wrong');
+                iconEl.textContent = "🌱";
+                titleEl.textContent = `Perlu Latihan Lagi`;
+                subEl.textContent = `Skor kamu ${sessionScore}. Minimal skor 80 dibutuhkan untuk membuka level selanjutnya. Tetap semangat!`;
+                nextLvlBtn.classList.add('hidden');
+            }
+
+            // RENDER DAFTAR REVIEW JAWABAN GAME
+            const container = document.getElementById('game-review-container');
+            container.innerHTML = gameReviewHistory.map(item => `
+                <div class="p-3.5 rounded-xl border-2 ${item.isCorrect ? 'border-eco-200 bg-white' : 'border-rose-200 bg-rose-50/40'}">
+                    <div class="flex justify-between items-start gap-2 mb-1.5">
+                        <span class="font-bold text-xs sm:text-sm text-slate-800">Soal #${item.num}</span>
+                        <span class="px-2 py-0.5 rounded font-bold text-[11px] ${item.isCorrect ? 'bg-eco-100 text-eco-800' : 'bg-rose-100 text-rose-800'}">
+                            ${item.isCorrect ? '✅ Benar' : '❌ Salah'}
+                        </span>
+                    </div>
+                    <p class="text-xs sm:text-sm font-semibold text-slate-700 mb-2">${item.question}</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-semibold mb-2">
+                        <div class="p-2 rounded-lg bg-slate-100">Jawaban Kamu: <strong class="${item.isCorrect ? 'text-eco-700' : 'text-rose-700'}">${item.userAnswer}</strong></div>
+                        <div class="p-2 rounded-lg bg-emerald-50 text-emerald-800">Jawaban Benar: <strong>${item.correctAnswer}</strong></div>
+                    </div>
+                    <p class="text-xs text-slate-600 bg-white p-2 rounded-lg border border-slate-200">💡 <strong>Pembahasan:</strong> ${item.explanation}</p>
+                </div>
+            `).join('');
+
+            if(window.MathJax) MathJax.typesetPromise([container]);
+
+            switchScreen('screen-result');
+        }
+
+        function handleResetProgress() {
+            if (!currentStudentName) return;
+            if (confirm(`Apakah kamu yakin ingin mereset seluruh progres & kunci level untuk '${currentStudentName}'?`)) {
+                localStorage.removeItem(`${currentStudentName}_unlockedLevel`);
+                unlockedLevel = 1;
+                updateLevelCardsUI();
+                alert("✨ Progres berhasil direset ke Level 1!");
+            }
+        }
+
+        // KANVAS BURAM / CORET-CORET LOGIC
+        let canvas, ctx, isDrawing = false;
+        let currentColor = '#1e293b';
+
+        function initCanvas() {
+            canvas = document.getElementById('scratchpad-canvas');
+            if(!canvas) return;
+            ctx = canvas.getContext('2d');
+            
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseleave', stopDrawing);
+
+            canvas.addEventListener('touchstart', handleTouchStart, {passive: false});
+            canvas.addEventListener('touchmove', handleTouchMove, {passive: false});
+            canvas.addEventListener('touchend', stopDrawing);
+        }
+
+        function resizeCanvas() {
+            if(!canvas) return;
+            const rect = canvas.parentElement.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = currentColor;
+        }
+
+        function setCanvasColor(color) {
+            currentColor = color;
+            if(ctx) ctx.strokeStyle = color;
+        }
+
+        function startDrawing(e) {
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        }
+
+        function draw(e) {
+            if(!isDrawing) return;
+            ctx.lineTo(e.offsetX, e.offsetY);
+            ctx.stroke();
+        }
+
+        function stopDrawing() { isDrawing = false; }
+
+        function handleTouchStart(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            isDrawing = true;
+            ctx.beginPath();
+            ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            if(!isDrawing) return;
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function clearScratchpad() {
+            if(ctx && canvas) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function toggleScratchpad(show) {
+            const modal = document.getElementById('modal-scratchpad');
+            if(show) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                setTimeout(resizeCanvas, 50);
+            } else {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+
+        window.addEventListener('load', initCanvas);
+        window.addEventListener('resize', resizeCanvas);
+
+        async function sendDataToSheet(question, answer, status, score) {
+            if (!SCRIPT_URL) return;
+            const params = {
+                nama: currentStudentName,
+                level: `Level ${currentLevel}`,
+                soal: question,
+                jawaban: answer,
+                status: status,
+                skor: score
+            };
+            const formData = new URLSearchParams(params).toString();
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                });
+            } catch(e) { console.warn(e); }
+        }
+    </script>
+</body>
+</html>
