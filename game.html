@@ -655,24 +655,33 @@
             }
         }
 
-        // TIMER SYSTEM HITUNG MUNDUR (30 DETIK)
         function startTimer() {
-            stopTimer();
-            timeLeft = 30;
-            updateTimerDisplay();
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-                if (timeLeft <= 5 && timeLeft > 0) {
-                    playSound('tick');
-                }
-                if (timeLeft <= 0) {
-                    stopTimer();
-                    handleTimeOut();
-                }
-            }, 1000);
-        }
+    stopTimer();
+    
+    // Penentuan durasi waktu per level dalam hitungan detik
+    const timeLimits = {
+        1: 30,   // Level 1: 30 detik
+        2: 60,   // Level 2: 1 menit
+        3: 90,   // Level 3: 1,5 menit
+        4: 120,  // Level 4: 2 menit
+        5: 120   // Level 5: 2 menit
+    };
+    
+    timeLeft = timeLimits[currentLevel] || 30;
+    updateTimerDisplay();
 
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 5 && timeLeft > 0) {
+            playSound('tick');
+        }
+        if (timeLeft <= 0) {
+            stopTimer();
+            handleTimeOut();
+        }
+    }, 1000);
+}
         function stopTimer() {
             if (timerInterval) {
                 clearInterval(timerInterval);
